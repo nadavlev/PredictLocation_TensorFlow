@@ -4,6 +4,7 @@ import moment = require('moment');
 import * as tf from '@tensorflow/tfjs'
 import { Sequential } from '@tensorflow/tfjs';
 import { ModelLoggingVerbosity } from '@tensorflow/tfjs-layers/dist/base_callbacks';
+import {Server} from "./server";
 
 const app: express.Application = express();
 const POINT_PRECISION = 10000000;
@@ -11,12 +12,13 @@ const POINT_GROUP_PRECISION = 10000;
 class Main {
    private readyData: any[] = [];
    private data: any = raw_data;
-   constructor() {
-      console.log('this is the constructor');
+   private serverClass: Server;
+   constructor(serverClass: Server) {
+      this.serverClass = serverClass;
    }
-   
+
    async start() {
-      this.buildServer();
+      this.serverClass.buildServer();
       this.readyData = this.dataMunging(this.data.locations);
       console.log(this.readyData.length);
       // this.writeDataToConsole(this.readyData);
@@ -111,20 +113,16 @@ class Main {
       });
           //.filter((location) => (location.latGroup != null && location.longGroup != null && location.timestampMs != null));
    }
-   
-   private writeDataToConsole(data: object) {
-      console.log(data);
-   }
-   
-   private buildServer() {
-      app.get('/', function(req, res) {
-         res.send('Hello world');
-      });
-   
-      app.listen(3000, function() {
-         console.log('Listening on port 3000')
-      });
-   }
+
+   // private buildServer() {
+   //    app.get('/', function(req, res) {
+   //       res.send('Hello world');
+   //    });
+   //
+   //    app.listen(3000, function() {
+   //       console.log('Listening on port 3000')
+   //    });
+   // }
    
 }
 
